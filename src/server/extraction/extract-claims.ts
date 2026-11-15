@@ -165,6 +165,12 @@ function classifyMoney(before: string, after: string): MoneyKind {
   const b = before.toLowerCase();
   const a = after.toLowerCase();
   const near = `${b} §§ ${a}`;
+  // Labels that FOLLOW the amount ("$200 holding fee") take precedence.
+  const head = a.slice(0, 30);
+  if (/^\s*(non-?refundable\s+)?(holding|reservation|key)\s+(fee|deposit)/.test(head)) return "holding_fee";
+  if (/^\s*pet\s+(fee|deposit)/.test(head)) return "pet_deposit";
+  if (/^\s*(non-?refundable\s+)?(application|processing|screening|admin(istration)?)\s+fee/.test(head)) return "application_fee";
+  if (/^\s*late\s+(fee|charge)/.test(head)) return "late_fee";
   if (/late\s+(fee|charge|payment|penalty)/.test(b)) return "late_fee";
   if (/(application|applying|processing|screening|admin(istration)?|background[\s-]check|credit[\s-]check)\s+(fee|charge|cost)/.test(near)) return "application_fee";
   if (/\bfee\b/.test(a.slice(0, 25)) && /(application|processing|screening|admin)/.test(a.slice(0, 40))) return "application_fee";

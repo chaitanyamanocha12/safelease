@@ -172,7 +172,7 @@ export const summarizeCase: AgentTool<object> = {
     const drafts = asDrafts(s);
     const h = headline(drafts);
     const top = drafts.filter((d) => d.severity !== "info").slice(0, 4).map((d) => d.title);
-    let summary = `${h.text}${top.length ? ` Key items: ${top.join("; ")}.` : ""} Rental authority has not been independently verified unless shown otherwise in Verification.`;
+    let summary = `${top.length ? `Key items: ${top.join("; ")}. ` : ""}Rental authority has not been independently verified unless shown otherwise in Verification.`;
     let mode: "DETERMINISTIC" | "LLM" = "DETERMINISTIC";
     if (llm().configured()) {
       const facts = drafts.map((d) => `- [${d.severity}/${d.label}] ${d.title}: ${redactText(d.explanation).slice(0, 300)}`).join("\n");

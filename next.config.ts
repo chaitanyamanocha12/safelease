@@ -7,7 +7,23 @@ import type { NextConfig } from "next";
  * private, per-user data, so we render dynamically per request rather than
  * risk caching one renter's case data into a shared static shell.
  */
+const isDev = process.env.NODE_ENV !== "production";
+// 'unsafe-inline' scripts are required by Next.js without a nonce-based setup (documented in SECURITY.md).
+const csp = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+].join("; ");
+
 const securityHeaders = [
+  { key: "Content-Security-Policy", value: csp },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

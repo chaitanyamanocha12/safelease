@@ -34,10 +34,12 @@ function trunc(s: string, n: number) {
 export function EvidenceGraph({ evidence, claims, links, findings }: { evidence: GEvidence[]; claims: GClaim[]; links: GLink[]; findings: GFinding[] }) {
   const [selected, setSelected] = useState<NodeRef | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+  const involved = useMemo(() => new Set([...findings.flatMap((f) => f.claimIds), ...links.filter((l) => l.relation !== "supports").flatMap((l) => [l.fromClaimId, l.toClaimId])]), [findings, links]);
 
   const visibleClaims = useMemo(
-    () => claims.filter((c) => c.claimType !== "listing_title" && (showHistory || !c.superseded)).sort((a, b) => a.claimType.localeCompare(b.claimType)),
-    [claims, showHistory],
+    () => claims.filter((c) => c.claimType !== "listing_title" && (showHistory || !c.superseded) && (showAll || involved.has(c.id))).sort((a, b) => a.claimType.localeCompare(b.claimType)),
+    [claims, showHistory, showAll, involved],
   );
   const visibleEvidence = useMemo(() => evidence.filter((e) => showHistory || !e.superseded || visibleClaims.some((c) => c.evidenceId === e.id)), [evidence, showHistory, visibleClaims]);
   const claimIds = new Set(visibleClaims.map((c) => c.id));
@@ -139,6 +141,9 @@ export function EvidenceGraph({ evidence, claims, links, findings }: { evidence:
           <span className="flex items-center gap-1"><span className="h-0.5 w-5 bg-teal" /> your correction</span>
           <span className="flex items-center gap-1"><span className="h-0.5 w-5 border-t border-dashed border-ok" /> consistent</span>
         </div>
+        <label className="flex items-center gap-1.5">
+          <input type="checkbox" checked={showAll} onChange={(e) => setShowAll(e.target.checked)} /> Show all statements
+        </label>
         <label className="flex items-center gap-1.5">
           <input type="checkbox" checked={showHistory} onChange={(e) => setShowHistory(e.target.checked)} /> Show superseded history
         </label>

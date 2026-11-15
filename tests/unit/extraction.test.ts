@@ -70,3 +70,11 @@ describe("normalization", () => {
     expect(normalizePhone("+1 (902) 555-0142")).toBe("9025550142");
   });
 });
+
+describe("amount labels after the number", () => {
+  it("classifies '$200 holding fee' even after a deposit mention", () => {
+    const c = extractClaims("The security deposit is $700 plus a $200 holding fee to reserve the unit.", { sourceKind: "message" });
+    expect(c.find((x) => x.claimType === "deposit")?.normalized).toBe("70000");
+    expect(c.find((x) => x.claimType === "holding_fee")?.normalized).toBe("20000");
+  });
+});

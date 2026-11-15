@@ -1,0 +1,92 @@
+{
+  "disclaimer": "Measured on SafeLease's fictional evaluation fixtures only. Not real-world fraud-detection accuracy.",
+  "cases": 12,
+  "expectedFindingsDetected": 19,
+  "expectedFindingsMissed": 0,
+  "falsePositives": 0,
+  "correctlyAbsent": 16,
+  "legalRuleCheckAccuracy": "10/10",
+  "toolRuns": {
+    "succeeded": 178,
+    "not_configured": 10
+  },
+  "toolSuccessRate": "94.7% (unconfigured providers counted separately: 10)",
+  "providerUnavailableHandled": 10,
+  "averageInvestigationMs": 51,
+  "unauthorizedAccessAttemptsBlocked": "12/12",
+  "plannerMode": "deterministic",
+  "perCase": [
+    {
+      "case": "A: pressure + recipient + SIN",
+      "missed": [],
+      "falsePositives": [],
+      "ms": 127
+    },
+    {
+      "case": "B: normal listing, unverified",
+      "missed": [],
+      "falsePositives": [],
+      "ms": 69
+    },
+    {
+      "case": "C: excessive lease deposit",
+      "missed": [],
+      "falsePositives": [],
+      "ms": 50
+    },
+    {
+      "case": "D: listing vs lease rent",
+      "missed": [],
+      "falsePositives": [],
+      "ms": 59
+    },
+    {
+      "case": "F: revision resolves rent, deposit remains",
+      "missed": [],
+      "falsePositives": [],
+      "ms": 63
+    },
+    {
+      "case": "Application fee",
+      "missed": [],
+      "falsePositives": [],
+      "ms": 33
+    },
+    {
+      "case": "Wire transfer + gift cards",
+      "missed": [],
+      "falsePositives": [],
+      "ms": 34
+    },
+    {
+      "case": "Low rent, foreign phone, viewing offered (no warning)",
+      "missed": [],
+      "falsePositives": [],
+      "ms": 33
+    },
+    {
+      "case": "Recipient changed between messages",
+      "missed": [],
+      "falsePositives": [],
+      "ms": 34
+    },
+    {
+      "case": "Holding fee pushes over limit",
+      "missed": [],
+      "falsePositives": [],
+      "ms": 35
+    },
+    {
+      "case": "Prompt injection",
+      "missed": [],
+      "falsePositives": [],
+      "ms": 41
+    },
+    {
+      "case": "Lookalike link",
+      "missed": [],
+      "falsePositives": [],
+      "ms": 31
+    }
+  ]
+}
