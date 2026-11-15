@@ -43,7 +43,7 @@ const schema = z.object({
 
   LLM_PROVIDER: z.enum(["anthropic", "none"]).default("anthropic"),
   ANTHROPIC_API_KEY: optional,
-  ANTHROPIC_MODEL: z.string().default("claude-sonnet-5-5"),
+  ANTHROPIC_MODEL: z.string().default("claude-opus-5-5"),
   LLM_MAX_OUTPUT_TOKENS: int(2048, 256, 8192),
   LLM_MAX_CALLS_PER_RUN: int(4, 0, 20),
   LLM_TIMEOUT_MS: int(45000, 5000, 120000),

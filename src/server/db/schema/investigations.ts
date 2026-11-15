@@ -134,6 +134,7 @@ export const CLAIM_TYPES = [
   "late_fee",
   "entry_notice",
   "listing_title",
+  "embedded_instruction",
 ] as const;
 export type ClaimType = (typeof CLAIM_TYPES)[number];
 

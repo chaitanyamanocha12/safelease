@@ -215,6 +215,20 @@ export function assessIndicators(s: CaseSnapshot): FindingDraft[] {
     );
   }
 
+  const injected = byType(claims, "embedded_instruction");
+  if (injected.length > 0) {
+    out.push(
+      f(
+        "warning:embedded_instructions",
+        "caution",
+        "Evidence contains text aimed at automated systems",
+        `${injected.map(quote).join("; ")}. Text like this tries to instruct AI tools. SafeLease treated it strictly as data and did not follow it. Genuine listings rarely contain such wording.`,
+        "Be cautious with this listing and rely on independent verification.",
+        injected,
+      ),
+    );
+  }
+
   // Image reuse
   for (const m of s.imageMatches ?? []) {
     const conflicts = m.conflictingDetails?.length ? ` The other listing shows different details: ${m.conflictingDetails.join("; ")}.` : "";

@@ -510,6 +510,16 @@ function extractConduct(text: string, c: Collector) {
   }
 }
 
+const INJECTION_RE =
+  /\b(ignore (?:all |any |your |the )?(?:previous |prior |above )?(?:instructions|prompts|rules)|disregard (?:your|the|all) (?:instructions|rules)|system prompt|you are now (?:an? )?(?:ai|assistant|chatbot)|as an ai (?:model|assistant)|reveal (?:the )?(?:user'?s )?(?:private )?(?:documents|data|files|instructions)|mark (?:this|the) (?:listing|landlord|rental) as (?:verified|safe|legitimate)|(?:assistant|ai|chatgpt|claude),? (?:please )?(?:say|report|state) (?:that )?(?:this|the))/gi;
+
+function extractEmbeddedInstructions(text: string, c: Collector) {
+  for (const m of text.matchAll(INJECTION_RE)) {
+    const s = m.index ?? 0;
+    c.add("embedded_instruction", m[0], m[0].toLowerCase().replace(/\s+/g, " "), s, s + m[0].length, "high");
+  }
+}
+
 function extractTitle(text: string, c: Collector) {
   const firstLine = text.split("\n").find((l) => l.trim().length > 0)?.trim();
   if (firstLine && firstLine.length >= 8 && firstLine.length <= 100 && !/@/.test(firstLine)) {
@@ -527,5 +537,6 @@ export function extractClaims(text: string, opts: ExtractOptions = {}): Extracte
   extractPropertyFacts(bounded, c);
   extractContacts(bounded, c);
   extractConduct(bounded, c);
+  extractEmbeddedInstructions(bounded, c);
   return c.claims.sort((a, b) => a.start - b.start);
 }
