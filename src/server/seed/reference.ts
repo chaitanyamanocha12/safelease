@@ -57,5 +57,8 @@ export async function seedReference(db: DB) {
   if (!job) {
     await db.insert(monitoringJob).values({ id: newId("job"), jobType: "legal_source_review", targetType: "legal_sources", intervalHours: 24 * 7, nextRunAt: new Date() });
     await db.insert(monitoringJob).values({ id: newId("job"), jobType: "retention_cleanup", targetType: "documents", intervalHours: 24, nextRunAt: new Date() });
+    await db.insert(monitoringJob).values({ id: newId("job"), jobType: "deposit_deadline_reminder", targetType: "all_deposits", intervalHours: 24, nextRunAt: new Date() });
+    await db.insert(monitoringJob).values({ id: newId("job"), jobType: "maintenance_followup", targetType: "all_maintenance", intervalHours: 24, nextRunAt: new Date() });
+    await db.insert(monitoringJob).values({ id: newId("job"), jobType: "saved_search_refresh", targetType: "all_saved_searches", intervalHours: 12, nextRunAt: new Date() });
   }
 }

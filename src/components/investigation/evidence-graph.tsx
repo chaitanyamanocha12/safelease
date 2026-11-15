@@ -6,7 +6,7 @@
  */
 import { useMemo, useState } from "react";
 import { FileText, Link2 } from "lucide-react";
-import { cn, titleCase } from "@/lib/utils";
+import { titleCase } from "@/lib/utils";
 import { EvidenceStatusBadge, SeverityBadge } from "@/components/status/status-badge";
 
 interface GEvidence { id: string; title: string; kind: string; superseded: boolean }

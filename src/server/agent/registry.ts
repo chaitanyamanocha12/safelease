@@ -5,6 +5,7 @@ import { caseMonitoring, generateVerificationQuestions, prepareCommunication, su
 import type { AgentTool, ToolCategory } from "./tools/types";
 
 /** Ordered tool registry. Order = deterministic planner priority within a phase. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- heterogeneous tool inputs; each tool validates its own input
 export const TOOLS: AgentTool<any>[] = [
   fetchListingPage,
   analyzeListing,

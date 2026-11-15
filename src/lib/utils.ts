@@ -32,3 +32,20 @@ export function relativeTime(d: Date | string | number | null | undefined) {
 export function titleCase(s: string) {
   return s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
+
+/** Request-time clock helpers (kept outside component bodies). */
+export function daysAgo(n: number): Date {
+  return new Date(Date.now() - n * 86400_000);
+}
+export function todayIso(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+export async function timed<T>(fn: () => Promise<T>): Promise<{ value: T | null; ms: number; ok: boolean }> {
+  const t0 = performance.now();
+  try {
+    const value = await fn();
+    return { value, ms: Math.round(performance.now() - t0), ok: true };
+  } catch {
+    return { value: null, ms: Math.round(performance.now() - t0), ok: false };
+  }
+}

@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState, PageHeader, Stat } from "@/components/ui/misc";
 import { BarList } from "@/components/charts/bar-list";
-import { formatDate, relativeTime } from "@/lib/utils";
+import { daysAgo, formatDate, relativeTime, todayIso } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
@@ -39,7 +39,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
     ? await db.select({ category: finding.category, n: sql<number>`count(*)` }).from(finding).where(and(inArray(finding.investigationId, invIds), eq(finding.lifecycle, "active"))).groupBy(finding.category)
     : [];
   const serious = invIds.length ? Number((await db.select({ n: sql<number>`count(*)` }).from(finding).where(and(inArray(finding.investigationId, invIds), eq(finding.lifecycle, "active"), eq(finding.severity, "serious"))))[0]?.n ?? 0) : 0;
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayIso();
   const deadlines: Array<{ date: string; label: string; href: string }> = [];
   for (const d of deposits) {
     const { events } = await getDeposit(user.id, d.id);
@@ -48,13 +48,13 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   }
   for (const m of maint.filter((x) => x.promisedBy && x.status !== "tenant_confirmed_resolved")) deadlines.push({ date: m.promisedBy!, label: `Promised repair: ${m.title}`, href: `/maintenance/${m.id}` });
   deadlines.sort((a, b) => a.date.localeCompare(b.date));
-  const recentMonth = invIds.length ? Number((await db.select({ n: sql<number>`count(*)` }).from(investigation).where(and(eq(investigation.ownerId, user.id), gte(investigation.createdAt, new Date(Date.now() - 30 * 86400_000)))))[0]?.n ?? 0) : 0;
+  const recentMonth = invIds.length ? Number((await db.select({ n: sql<number>`count(*)` }).from(investigation).where(and(eq(investigation.ownerId, user.id), gte(investigation.createdAt, daysAgo(30)))))[0]?.n ?? 0) : 0;
   const ai = aiModeLabel();
 
   return (
     <>
       <PageHeader
-        eyebrow={new Date().toLocaleDateString("en-CA", { weekday: "long", month: "long", day: "numeric" })}
+        eyebrow={daysAgo(0).toLocaleDateString("en-CA", { weekday: "long", month: "long", day: "numeric" })}
         title={`Welcome back, ${user.name.split(" ")[0]}`}
         description="Investigate before you pay. Here's where your cases stand."
         actions={<Button asChild variant="teal"><Link href="/investigations/new"><Plus /> Investigate a rental</Link></Button>}

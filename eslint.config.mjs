@@ -6,7 +6,18 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   // Override default ignores of eslint-config-next.
+  {
+    rules: {
+      // React escapes text content; apostrophes in copy are intentional.
+      "react/no-unescaped-entities": "off",
+      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+    },
+  },
   globalIgnores([
+    "playwright-report/**",
+    "test-results/**",
+    "storage/**",
+    "data/**",
     // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
