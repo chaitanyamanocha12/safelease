@@ -40,7 +40,10 @@ export async function createDraft(
         maxTokens: 1200,
       },
     );
-    if (res.ok) {
+    const { makesCertaintyClaim } = await import("../agent/tools/actions");
+    if (res.ok && makesCertaintyClaim(res.data.body)) {
+      note = "AI wording was discarded because it asserted facts as verified; template used.";
+    } else if (res.ok) {
       subject = res.data.subject;
       body = res.data.body;
       generatedBy = "llm";

@@ -138,7 +138,7 @@ export function evaluatePrepayment(s: CaseSnapshot, input: PrepayInput, activeFi
     concerns > 0
       ? `${concerns} concern${concerns === 1 ? "" : "s"} and ${unknowns} open question${unknowns === 1 ? "" : "s"}. We recommend not paying until these are resolved.`
       : unknowns > 0
-        ? `No concerns flagged, but ${unknowns} item${unknowns === 1 ? " is" : "s are"} unverified. Resolve them before paying.`
+        ? `No concerns flagged, but ${unknowns} item${unknowns === 1 ? " is" : "s are"} unverified. Resolve them before paying — SafeLease can't guarantee a payment is safe.`
         : "No concerns flagged in the items reviewed. SafeLease can't guarantee a payment is safe — keep receipts and pay by traceable methods.";
   return { items, concerns, unknowns, headline };
 }

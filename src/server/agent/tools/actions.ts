@@ -17,6 +17,13 @@ import { logEvent, proposeAction } from "../../services/investigations";
 import type { FindingDraft } from "../../investigation/types";
 import { hashOf, type AgentTool, type AgentState } from "./types";
 
+/** Rejects AI text that asserts safety, legitimacy, verification or fraud as fact. */
+export function makesCertaintyClaim(text: string): boolean {
+  return text
+    .split(/(?<=[.!?])\s+/)
+    .some((sentence) => /\b(safe|legit(imate)?|genuine|trustworthy|verified|a scam|scammer|fraud(ulent)?)\b/i.test(sentence) && !/\b(not|no|never|unverified|can't|cannot|isn't|hasn't|unconfirmed)\b/i.test(sentence));
+}
+
 function asDrafts(s: AgentState): FindingDraft[] {
   return s.activeFindings.map((f) => ({
     key: f.findingKey,
@@ -180,7 +187,7 @@ export const summarizeCase: AgentTool<object> = {
           maxTokens: 600,
         },
       );
-      if (r.ok && !/\b(is|looks|seems) (safe|legit(imate)?|a scam|fraudulent)\b/i.test(r.data.summary)) {
+      if (r.ok && !makesCertaintyClaim(r.data.summary)) {
         summary = `${r.data.summary} (AI-written summary of the findings below.)`;
         mode = "LLM";
       }
