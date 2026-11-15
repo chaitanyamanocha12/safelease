@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "f8f77d01-eb5a-4f72-b198-7eb6154d53b3",
+  "id": "64dd4261-7ff3-4616-8808-32aac8fa7f2a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -2296,8 +2296,8 @@
           "notNull": false,
           "autoincrement": false
         },
-        "d_hash": {
-          "name": "d_hash",
+        "p_hash": {
+          "name": "p_hash",
           "type": "text",
           "primaryKey": false,
           "notNull": true,

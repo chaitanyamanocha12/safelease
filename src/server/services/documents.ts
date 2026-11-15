@@ -68,7 +68,7 @@ async function writeVersion(ownerId: string, documentId: string, version: number
       const fp = await fingerprintImage(upload.bytes);
       const metadata = await readImageMetadata(upload.bytes);
       fingerprintId = newId("fp");
-      await db.insert(imageFingerprint).values({ id: fingerprintId, ownerId, documentVersionId: versionId, dHash: fp.dHash, aHash: fp.aHash, width: fp.width, height: fp.height, metadata });
+      await db.insert(imageFingerprint).values({ id: fingerprintId, ownerId, documentVersionId: versionId, pHash: fp.pHash, aHash: fp.aHash, width: fp.width, height: fp.height, metadata });
     } catch {
       fingerprintId = null;
     }

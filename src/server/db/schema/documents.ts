@@ -98,7 +98,7 @@ export const imageFingerprint = sqliteTable(
     /** Exactly one of these is set. */
     documentVersionId: text("document_version_id").references(() => documentVersion.id, { onDelete: "cascade" }),
     listingImageId: text("listing_image_id"),
-    dHash: text("d_hash").notNull(),
+    pHash: text("p_hash").notNull(),
     aHash: text("a_hash").notNull(),
     width: integer("width"),
     height: integer("height"),

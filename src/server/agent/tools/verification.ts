@@ -174,7 +174,7 @@ export const imageReuseCheck: AgentTool<{ fingerprintIds: string[] }> = {
     }
     await upsertCheck(s.inv.id, "image_reuse_local", {
       status: "unverified",
-      method: "Local perceptual-hash comparison (dHash/aHash)",
+      method: "Local perceptual-hash comparison (pHash/aHash)",
       summary: matches.length
         ? `${matches.length} local image match(es) found. Matches can be legitimate; see details.`
         : `No local match among ${others.length + listingFps.length} image(s) compared. This does not establish that the photos are original.`,

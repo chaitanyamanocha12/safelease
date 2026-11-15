@@ -323,7 +323,7 @@ CREATE TABLE `image_fingerprint` (
 	`owner_id` text,
 	`document_version_id` text,
 	`listing_image_id` text,
-	`d_hash` text NOT NULL,
+	`p_hash` text NOT NULL,
 	`a_hash` text NOT NULL,
 	`width` integer,
 	`height` integer,

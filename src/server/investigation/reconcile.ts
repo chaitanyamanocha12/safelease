@@ -43,8 +43,26 @@ const LABEL: Partial<Record<ClaimType, string>> = {
   utilities: "Utilities",
 };
 
-function comparable(type: ClaimType, c: ClaimRecord): string {
+const MONTH_NUM: Record<string, string> = { jan: "01", feb: "02", mar: "03", apr: "04", may: "05", jun: "06", jul: "07", aug: "08", sep: "09", oct: "10", nov: "11", dec: "12" };
+
+/** Canonical comparison key. Deliberately tolerant to avoid false contradictions. */
+export function comparable(type: ClaimType, c: Pick<ClaimRecord, "normalized">): string {
   if (type === "address") return addressCore(c.normalized);
+  if (type === "lease_term") {
+    // Compare by duration when stated ("12 month lease" ≈ "Fixed-term, 12 months" ≈ year-to-year).
+    const months = c.normalized.match(/(\d{1,2})/)?.[1];
+    if (months) return `m${Number(months)}`;
+    if (c.normalized === "year_to_year") return "m12";
+    return c.normalized;
+  }
+  if (type === "move_in_date") {
+    // Compare month + day only ("September 1" ≈ "September 1, 2026").
+    const iso = c.normalized.match(/^\d{4}-(\d{2})-(\d{2})$/);
+    if (iso) return `${iso[1]}-${Number(iso[2])}`;
+    const m = c.normalized.match(/^([a-z]{3})[a-z]*\.?\s+(\d{1,2})/);
+    if (m && MONTH_NUM[m[1]!]) return `${MONTH_NUM[m[1]!]}-${Number(m[2])}`;
+    return c.normalized;
+  }
   return c.normalized;
 }
 
@@ -249,18 +267,21 @@ function contactAndRecipientChecks(claims: ClaimRecord[], evById: ReturnType<typ
 
   // Contact names that don't match each other across evidence
   const incompatible: ClaimRecord[][] = [];
+  const isBusiness = (n: string) => /\b(residential|properties|property|rentals?|management|homes|realty|living|apartments|holdings|ltd|inc|corp|group)\b/i.test(n);
   for (let i = 0; i < names.length; i++) {
     for (let j = i + 1; j < names.length; j++) {
-      if (names[i]!.evidenceId !== names[j]!.evidenceId && !namesCompatible(names[i]!.value, names[j]!.value)) incompatible.push([names[i]!, names[j]!]);
+      const [x, y] = [names[i]!, names[j]!];
+      if (isBusiness(x.value) || isBusiness(y.value)) continue;
+      if (x.evidenceId !== y.evidenceId && !namesCompatible(x.value, y.value)) incompatible.push([x, y]);
     }
   }
   if (incompatible.length > 0) {
     const involved = [...new Set(incompatible.flat())];
     out.push({
-      key: "warning:contact_name_changed",
-      category: "warning",
-      label: "warning",
-      severity: "caution",
+      key: "context:contact_name_changed",
+      category: "context",
+      label: "unverified",
+      severity: "info",
       title: "Different names are used for the rental contact",
       explanation: `The evidence names ${[...new Set(involved.map((c) => `“${c.value}”`))].join(" and ")} as the contact. This may be a property manager and owner, but the relationship should be clarified.`,
       recommendation: "Ask who owns the unit and who manages it, and how to confirm each independently.",
