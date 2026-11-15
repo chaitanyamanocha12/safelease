@@ -56,7 +56,7 @@ const textEvidence = z.object({
 export async function addEvidenceAction(fd: FormData): Promise<ActionResult<{ evidenceIds: string[]; runId: string | null }>> {
   try {
     const user = await requireApiUser();
-    rateLimit(`evidence:${user.id}`, 40, 60_000);
+    await rateLimit(`evidence:${user.id}`, 40, 60_000);
     const files = fd.getAll("files").filter((f): f is File => f instanceof File && f.size > 0);
     if (files.length > MAX_FILES_PER_REQUEST) throw new AppError("VALIDATION", `Upload at most ${MAX_FILES_PER_REQUEST} files at once.`);
     const parsed = textEvidence.safeParse({

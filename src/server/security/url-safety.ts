@@ -2,11 +2,16 @@
  * SSRF protection for fetching user-supplied public listing URLs.
  * - http(s) only, default ports only, no credentials in URL
  * - DNS-resolved addresses must be public (no loopback/private/link-local/metadata)
+ * - the connection itself uses a pinned lookup that rejects private IPs, so a
+ *   host cannot resolve publicly during validation and privately at connect
+ *   time (DNS rebinding)
  * - redirects are followed manually and re-validated at every hop
  * - response size and time are capped; only text/html or text/plain accepted
  */
 import dns from "node:dns/promises";
+import dnsCb from "node:dns";
 import net from "node:net";
+import { Agent, fetch as undiciFetch } from "undici";
 
 export class UnsafeUrlError extends Error {}
 
@@ -95,6 +100,26 @@ export function automatedFetchRestricted(url: URL): string | null {
     : null;
 }
 
+/** Lookup used for the actual socket: refuses private/reserved addresses. */
+export function guardedLookup(hostname: string, options: dnsCb.LookupOptions, callback: (err: NodeJS.ErrnoException | null, address: string | dnsCb.LookupAddress[], family?: number) => void) {
+  dnsCb.lookup(hostname, { ...options, all: true, verbatim: true }, (err, addresses) => {
+    if (err) return callback(err, "", 0);
+    const list = addresses as dnsCb.LookupAddress[];
+    if (list.length === 0 || list.some((a) => isPrivateAddress(a.address))) {
+      const e = Object.assign(new Error("Blocked private network address"), { code: "EBLOCKED" }) as NodeJS.ErrnoException;
+      return callback(e, "", 0);
+    }
+    if (options.all) return callback(null, list);
+    callback(null, list[0]!.address, list[0]!.family);
+  });
+}
+
+let pinnedAgent: Agent | null = null;
+function agent() {
+  if (!pinnedAgent) pinnedAgent = new Agent({ connect: { lookup: guardedLookup as never, timeout: 8000 } });
+  return pinnedAgent;
+}
+
 export interface FetchedPage {
   finalUrl: string;
   status: number;
@@ -114,9 +139,10 @@ export async function safeFetchPage(rawUrl: string, opts: { timeoutMs?: number; 
     await assertPublicHost(url.hostname);
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
-    let res: Response;
+    let res: Awaited<ReturnType<typeof undiciFetch>>;
     try {
-      res = await fetch(url, {
+      res = await undiciFetch(url, {
+        dispatcher: agent(),
         redirect: "manual",
         signal: controller.signal,
         headers: { "User-Agent": "SafeLease/1.0 (renter-initiated single page fetch)", Accept: "text/html,text/plain;q=0.9" },
@@ -157,7 +183,7 @@ export async function safeFetchPage(rawUrl: string, opts: { timeoutMs?: number; 
       }
     }
     clearTimeout(timer);
-    const html = new TextDecoder("utf-8").decode(Buffer.concat(chunks));
+    const html = new TextDecoder("utf-8").decode(Buffer.concat(chunks.map((c) => Buffer.from(c))));
     return { finalUrl: url.toString(), status: res.status, contentType, ...htmlToText(html), truncated };
   }
   throw new UnsafeUrlError("Too many redirects.");

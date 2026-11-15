@@ -23,9 +23,11 @@ SafeLease handles leases, conversations, addresses and identity-adjacent data, s
 - **File privacy.**
   - Storage is private (outside `/public`), and storage keys are validated against path traversal.
   - Files are served only to their owner with `nosniff`, `Content-Security-Policy: sandbox` and `Cache-Control: private, no-store`.
+- **Rate limiting.** Better Auth and the app's own limiter (server actions, uploads, reports, exports) share the `rate_limit` database table, so limits hold across server instances. If the database is unreachable, the app limiter falls back to in-memory counting.
 - **SSRF.** Listing-URL fetching:
   - allows http(s) on default ports only, with no credentials in the URL;
   - blocks private, loopback, link-local, metadata and reserved ranges (IPv4 and IPv6, including mapped addresses) after DNS resolution;
+  - connects through an undici dispatcher whose DNS lookup rejects private addresses at socket time, closing the DNS-rebinding window;
   - re-validates on every redirect, limited to 3;
   - caps size and time, and accepts only HTML/text;
   - refuses platforms that require login or restrict automated access.
@@ -47,15 +49,13 @@ SafeLease handles leases, conversations, addresses and identity-adjacent data, s
 
 ## Known gaps / production hardening (not done)
 
-1. **Rate limiting is in-memory per process.** Use a shared store (Redis, or Better Auth's `rateLimit.storage = "database"`) on multi-instance hosting.
-2. **DNS-rebinding window.** The URL fetcher resolves the host, then `fetch` resolves again. Pin the resolved IP with a custom undici dispatcher, or disable `URL_FETCH_ENABLED`.
-3. **CSP allows `'unsafe-inline'` scripts.** Move to nonce-based CSP via `proxy.ts` for stricter protection.
-4. **No email verification or 2FA** on sign-up. Better Auth plugins exist and need an email provider.
-5. **No malware scanning** of uploads. Add ClamAV or a cloud scanner before accepting public uploads.
-6. **Encryption at rest:** local SQLite and files are not encrypted by the app. Use encrypted volumes, Turso encryption or S3 SSE/KMS.
-7. **Background runs** use `after()` in-process. A crash marks runs failed after 5 minutes (stale sweep). Use a durable queue for production.
-8. **Organization invites:** the link is shown to the admin to share manually when email isn't configured.
-9. A formal penetration test and accessibility audit have not been performed. WCAG conformance is not claimed.
+1. **CSP allows `'unsafe-inline'` scripts.** Move to nonce-based CSP via `proxy.ts` for stricter protection.
+2. **No email verification or 2FA** on sign-up. Better Auth plugins exist and need an email provider.
+3. **No malware scanning** of uploads. Add ClamAV or a cloud scanner before accepting public uploads.
+4. **Encryption at rest:** local SQLite and files are not encrypted by the app. Use encrypted volumes, Turso encryption or S3 SSE/KMS.
+5. **Background runs** use `after()` in-process. A crash marks runs failed after 5 minutes (stale sweep). Use a durable queue for production.
+6. **Organization invites:** the link is shown to the admin to share manually when email isn't configured.
+7. A formal penetration test and accessibility audit have not been performed. WCAG conformance is not claimed.
 
 ## Reporting
 

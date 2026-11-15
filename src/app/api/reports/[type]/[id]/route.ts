@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: Request, ctx: RouteContext<"/api/reports/[type]/[id]">) {
   try {
     const user = await requireApiUser();
-    rateLimit(`report:${user.id}`, 30, 60_000);
+    await rateLimit(`report:${user.id}`, 30, 60_000);
     const { type, id } = await ctx.params;
     const format = new URL(req.url).searchParams.get("format") ?? "pdf";
     let out: R.ReportOutput;

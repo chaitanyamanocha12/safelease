@@ -31,7 +31,8 @@ Legend: COMPLETE · TESTED (complete + automated tests) · PARTIALLY COMPLETE ·
 | Light/dark mode, responsive layouts, keyboard/ARIA basics | COMPLETE | Mobile E2E checks no horizontal overflow; no formal WCAG audit |
 | French interface | PARTIALLY COMPLETE | Navigation and key labels only; page copy is English |
 | S3 storage | COMPLETE | Untested without credentials |
-| Production hardening (shared rate limits, nonce CSP, upload scanning, durable queue) | NOT IMPLEMENTED | Listed in SECURITY.md |
+| Shared (DB-backed) rate limiting; DNS-rebinding-safe URL fetching | TESTED | |
+| Remaining production hardening (nonce CSP, upload scanning, durable queue, email verification/2FA) | NOT IMPLEMENTED | Listed in SECURITY.md |
 
 ## Next steps
 

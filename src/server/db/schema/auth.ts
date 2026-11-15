@@ -73,3 +73,11 @@ export const verification = sqliteTable(
   },
   (t) => [index("verification_identifier_idx").on(t.identifier)],
 );
+
+/** Shared rate-limit counters (Better Auth + app limiter); works across server instances. */
+export const rateLimit = sqliteTable("rate_limit", {
+  id: text("id").primaryKey(),
+  key: text("key").notNull().unique(),
+  count: integer("count").notNull(),
+  lastRequest: integer("last_request").notNull(),
+});

@@ -112,7 +112,7 @@ A failed live provider is never replaced with fabricated results. Tool runs reco
 - **External providers:** Google Vision, Brave, Nominatim, openrouteservice, Resend, S3 and licensed feeds are implemented but untested against real services (see API_INTEGRATIONS.md).
 - **Registry access:** Nova Scotia's Property Online registry needs paid authorized access, so SafeLease cannot check ownership. Rental authority stays "not independently verified" unless the renter records their own verification.
 - **OCR:** on-server OCR (English Tesseract) is accurate on clear screenshots and weaker on photos. Scanned PDFs need page images.
-- **Single-instance assumptions:** local SQLite and local file storage are for development or single-server use only. On serverless, use libSQL/Turso and S3-compatible storage. Background runs use `after()`, and the in-memory rate limiter is per-process (see DEPLOYMENT.md / SECURITY.md).
+- **Single-instance assumptions:** local SQLite and local file storage are for development or single-server use only. On serverless, use libSQL/Turso and S3-compatible storage. Background runs use `after()` in-process (see DEPLOYMENT.md / SECURITY.md).
 - **French:** French covers the navigation and key interface labels only. Most page copy is English.
 - **Production readiness:** passing tests and a working local demo do not make this production-ready. See SECURITY.md for the remaining hardening steps.
 

@@ -12,7 +12,7 @@ import { rateLimit } from "../security/rate-limit";
 export async function uploadDocumentAction(fd: FormData): Promise<ActionResult<{ ids: string[] }>> {
   try {
     const u = await requireApiUser();
-    rateLimit(`upload:${u.id}`, 30, 60_000);
+    await rateLimit(`upload:${u.id}`, 30, 60_000);
     const files = fd.getAll("files").filter((f): f is File => f instanceof File && f.size > 0);
     if (!files.length) throw new AppError("VALIDATION", "Choose at least one file.");
     const docType = z.enum(DOCUMENT_TYPES).parse(fd.get("docType") ?? "other");

@@ -27,7 +27,7 @@ export const auth = betterAuth({
   secret: secret(),
   database: drizzleAdapter(db, {
     provider: "sqlite",
-    schema: { user: schema.user, session: schema.session, account: schema.account, verification: schema.verification },
+    schema: { user: schema.user, session: schema.session, account: schema.account, verification: schema.verification, rateLimit: schema.rateLimit },
   }),
   emailAndPassword: {
     enabled: true,
@@ -69,6 +69,7 @@ export const auth = betterAuth({
   },
   rateLimit: {
     enabled: true,
+    storage: "database",
     window: 60,
     max: 120,
     customRules: {

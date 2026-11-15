@@ -13,7 +13,7 @@ export function action<S extends z.ZodTypeAny, T>(
   return async (raw: unknown): Promise<ActionResult<T>> => {
     try {
       const user = await requireApiUser();
-      if (opts.rateLimit) rateLimit(`${opts.rateLimit.key}:${user.id}`, opts.rateLimit.max, opts.rateLimit.windowMs);
+      if (opts.rateLimit) await rateLimit(`${opts.rateLimit.key}:${user.id}`, opts.rateLimit.max, opts.rateLimit.windowMs);
       const parsed = schema.safeParse(raw);
       if (!parsed.success) throw new AppError("VALIDATION", "Please check the highlighted fields.", { fieldErrors: zodFieldErrors(parsed.error.issues) });
       const data = await handler(user, parsed.data);

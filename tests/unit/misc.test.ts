@@ -120,3 +120,12 @@ describe("aggregate disclosure control", () => {
     expect(suppress(5, 5)).toBe(5);
   });
 });
+
+describe("DNS-rebinding guard", () => {
+  it("refuses to connect to hosts resolving to private addresses", async () => {
+    const { guardedLookup } = await import("@/server/security/url-safety");
+    const err = await new Promise<NodeJS.ErrnoException | null>((resolve) => guardedLookup("localhost", {}, (e) => resolve(e)));
+    expect(err?.code).toBe("EBLOCKED");
+  });
+});
+

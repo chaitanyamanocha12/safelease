@@ -22,7 +22,7 @@ src/
     services/             business services (all owner-scoped)
     actions/              server actions (validated with Zod)
     reports/              pdf-lib layout engine + report builders
-    security/             upload sniffing, SSRF-safe fetch, redaction, rate limiting
+    security/             upload sniffing, SSRF-safe fetch (pinned DNS), redaction, DB-backed rate limiting
     seed/                 reference + demo seed
 scripts/                  migrate, seed, reset-demo, jobs, eval, demo assets, e2e server
 tests/                    unit, integration, agent, components, e2e, fixtures
