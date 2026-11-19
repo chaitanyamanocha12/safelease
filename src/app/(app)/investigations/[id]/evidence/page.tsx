@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { FileImage, FileText, Info } from "lucide-react";
 import { requireUser } from "@/server/auth/session";
 import { getBoard } from "@/server/services/board";
@@ -64,7 +63,7 @@ export default async function EvidencePage({ params, searchParams }: { params: P
                 {e.sourceUrl ? <a href={e.sourceUrl} rel="noopener noreferrer nofollow" target="_blank" className="block truncate text-xs text-blue hover:underline">{e.sourceUrl}</a> : null}
                 {e.file ? (
                   <div className="flex flex-wrap items-center gap-3 text-xs">
-                    <Link href={`/api/files/${e.documentVersionId}`} className="text-blue hover:underline" target="_blank">View original file ({e.file.fileName})</Link>
+                    <a href={`/api/files/${e.documentVersionId}`} className="text-blue hover:underline" target="_blank">View original file ({e.file.fileName})</a>
                     <span className="text-muted-foreground">Text extraction: {e.file.extractionStatus.replace("_", " ")}</span>
                   </div>
                 ) : null}

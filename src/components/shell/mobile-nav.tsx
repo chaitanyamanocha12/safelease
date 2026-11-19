@@ -16,8 +16,8 @@ export function MobileNav(props: { labels: Record<string, string>; showOrg: bool
         </Button>
       </D.Trigger>
       <D.Portal>
-        <D.Overlay className="fixed inset-0 z-50 bg-black/40" />
-        <D.Content className="fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto border-r border-border bg-card p-4 shadow-2xl">
+        <D.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" />
+        <D.Content className="fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto border-r border-border bg-sidebar p-4 shadow-2xl">
           <div className="mb-6 flex items-center justify-between">
             <div className="flex items-center gap-2 font-semibold">
               <LogoMark /> SafeLease

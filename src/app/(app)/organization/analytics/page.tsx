@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FileDown } from "lucide-react";
 import { orgContext } from "@/server/services/org-context";
@@ -20,7 +19,7 @@ export default async function OrgAnalytics({ searchParams }: { searchParams: Pro
   const a = await organizationAggregates(user.id, current.org.id);
   return (
     <>
-      <PageHeader title={current.org.name} description="Aggregate patterns across consented cases only." actions={<><Button asChild variant="outline"><Link href={`/api/reports/organization/${current.org.id}`}><FileDown /> PDF</Link></Button><Button asChild variant="outline"><Link href={`/api/reports/organization/${current.org.id}?format=csv`}>CSV</Link></Button></>} />
+      <PageHeader title={current.org.name} description="Aggregate patterns across consented cases only." actions={<><Button asChild variant="outline"><a href={`/api/reports/organization/${current.org.id}`}><FileDown /> PDF</a></Button><Button asChild variant="outline"><a href={`/api/reports/organization/${current.org.id}?format=csv`}>CSV</a></Button></>} />
       <OrgNav orgId={current.org.id} active="/analytics" isAdmin={current.membership.role === "org_admin"} orgs={mems.map((m) => m.org)} />
       <Callout tone="info" className="mb-6">Any count below {a.minGroupSize} is shown as “&lt;{a.minGroupSize}” to prevent identifying individuals.{a.belowThreshold ? " Too few cases have been shared for most figures to be shown." : ""}</Callout>
       <div className="mb-6 grid gap-3 sm:grid-cols-3">

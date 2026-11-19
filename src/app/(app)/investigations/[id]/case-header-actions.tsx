@@ -11,17 +11,17 @@ export function CaseHeaderActions({ id, status }: { id: string; status: string }
   return (
     <div className="flex items-center gap-2">
       <Button asChild variant="outline" size="sm">
-        <Link href={`/api/reports/investigation/${id}?format=pdf`}><FileDown /> Report (PDF)</Link>
+        <a href={`/api/reports/investigation/${id}?format=pdf`}><FileDown /> Report (PDF)</a>
       </Button>
       <Dropdown>
         <DropdownTrigger asChild>
           <Button variant="ghost" size="icon" aria-label="More case actions"><MoreHorizontal /></Button>
         </DropdownTrigger>
         <DropdownContent>
-          <DropdownItem asChild><Link href={`/api/reports/investigation/${id}?format=json`}>Export JSON</Link></DropdownItem>
-          <DropdownItem asChild><Link href={`/api/reports/investigation/${id}?format=csv`}>Export findings (CSV)</Link></DropdownItem>
-          <DropdownItem asChild><Link href={`/api/reports/prepayment/${id}?format=pdf`}>Before-you-pay report</Link></DropdownItem>
-          <DropdownItem asChild><Link href={`/api/reports/verification/${id}?format=pdf`}>Verification checklist</Link></DropdownItem>
+          <DropdownItem asChild><a href={`/api/reports/investigation/${id}?format=json`}>Export JSON</a></DropdownItem>
+          <DropdownItem asChild><a href={`/api/reports/investigation/${id}?format=csv`}>Export findings (CSV)</a></DropdownItem>
+          <DropdownItem asChild><a href={`/api/reports/prepayment/${id}?format=pdf`}>Before-you-pay report</a></DropdownItem>
+          <DropdownItem asChild><a href={`/api/reports/verification/${id}?format=pdf`}>Verification checklist</a></DropdownItem>
           <DropdownSeparator />
           {status !== "closed" ? (
             <DropdownItem onSelect={async () => { const r = await updateInvestigationAction({ investigationId: id, status: "closed" }); if (!r.ok) toast.error(r.error); else toast.success("Case closed."); }}>Close case</DropdownItem>

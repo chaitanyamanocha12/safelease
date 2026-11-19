@@ -52,3 +52,10 @@ next-env.d.ts
 *.db-journal
 *.db-wal
 *.db-shm
+
+# Pitch film, recordings and other media (kept local, not part of the app)
+/pitch/
+/ScreenRecording_*
+*.MP4
+*.mp4
+*.mov

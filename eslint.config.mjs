@@ -13,6 +13,17 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
     },
   },
+  {
+    // Vendored React Bits components (fetched verbatim from reactbits.dev). They use the
+    // "latest props in a ref" pattern for rAF/WebGL loops, which the React Compiler rules flag.
+    files: ["src/components/reactbits/**"],
+    rules: {
+      "react-hooks/refs": "off",
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/immutability": "off",
+      "react-hooks/purity": "off",
+    },
+  },
   globalIgnores([
     "playwright-report/**",
     "test-results/**",

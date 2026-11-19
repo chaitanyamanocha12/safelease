@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { eq, inArray } from "drizzle-orm";
 import { FileDown } from "lucide-react";
 import { requireUser } from "@/server/auth/session";
@@ -18,7 +17,7 @@ function Row({ label, links }: { label: string; links: Array<[string, string]> }
   return (
     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border py-2 text-sm last:border-0">
       <span>{label}</span>
-      <span className="flex gap-3">{links.map(([l, h]) => <Link key={h} href={h} className="inline-flex items-center gap-1 text-blue hover:underline"><FileDown className="size-3.5" />{l}</Link>)}</span>
+      <span className="flex gap-3">{links.map(([l, h]) => <a key={h} href={h} className="inline-flex items-center gap-1 text-blue hover:underline"><FileDown className="size-3.5" />{l}</a>)}</span>
     </div>
   );
 }

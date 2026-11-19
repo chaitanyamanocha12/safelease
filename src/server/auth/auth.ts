@@ -63,7 +63,9 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24,
   },
   advanced: {
-    useSecureCookies: isProduction(),
+    // Secure cookies whenever the app is served over HTTPS. Safari refuses Secure cookies on
+    // http://localhost (Chrome allows them), so a local production build would silently fail to sign in.
+    useSecureCookies: isProduction() && env().APP_URL.startsWith("https://"),
     cookiePrefix: "safelease",
     database: { generateId: () => crypto.randomUUID() },
   },

@@ -29,17 +29,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const showAdmin = user.role === "platform_admin";
   return (
     <div className="flex min-h-dvh">
-      <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col overflow-y-auto border-r border-border bg-card px-3 py-4 lg:flex">
+      <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col overflow-y-auto border-r border-border bg-sidebar px-3 py-4 lg:flex">
         <div className="mb-6 px-2">
           <Logo href="/dashboard" />
         </div>
         <SidebarNav labels={labels} showOrg={showOrg} showAdmin={showAdmin} />
-        <div className="mt-auto rounded-lg border border-border bg-muted/60 p-3 text-xs text-muted-foreground">
-          SafeLease is decision support — not a lawyer, registry or landlord certification.
+        <div className="mt-auto rounded-lg border border-border bg-card/60 p-3 text-xs leading-relaxed text-muted-foreground">
+          <div className="mb-1 flex items-center gap-1.5 font-medium text-foreground/80"><span className="size-1.5 rounded-full bg-teal-strong" /> Decision support</div>
+          Not a lawyer, registry or landlord certification.
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-background/85 px-4 backdrop-blur">
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border/70 bg-background/75 px-4 backdrop-blur-xl backdrop-saturate-150">
           <MobileNav labels={labels} showOrg={showOrg} showAdmin={showAdmin} />
           <div className="lg:hidden">
             <Logo href="/dashboard" />

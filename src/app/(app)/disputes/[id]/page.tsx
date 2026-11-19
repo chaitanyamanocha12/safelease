@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FileDown, X } from "lucide-react";
 import { requireUser } from "@/server/auth/session";
@@ -36,7 +35,7 @@ export default async function DisputePage({ params }: { params: Promise<{ id: st
         </div>
         <div className="flex flex-wrap gap-2">
           <SimpleActionButton action={rebuildDisputeAction} args={{ id }} variant="outline" success="Package refreshed from your latest records">Refresh from records</SimpleActionButton>
-          <Button asChild><Link href={`/api/reports/dispute/${id}?format=pdf`}><FileDown /> Evidence package (PDF)</Link></Button>
+          <Button asChild><a href={`/api/reports/dispute/${id}?format=pdf`}><FileDown /> Evidence package (PDF)</a></Button>
           <SimpleActionButton action={deleteDisputeAction} args={{ id }} variant="ghost" redirectTo="/disputes">Delete</SimpleActionButton>
         </div>
       </div>

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Download, Lock } from "lucide-react";
 import { requireUser } from "@/server/auth/session";
 import { listMyConsents, myMemberships } from "@/server/services/organizations";
@@ -41,7 +40,7 @@ export default async function PrivacySettings() {
       <Card>
         <CardHeader><CardTitle>Your data</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <Button asChild variant="outline"><Link href="/api/account/export"><Download /> Export all my data (JSON)</Link></Button>
+          <Button asChild variant="outline"><a href="/api/account/export"><Download /> Export all my data (JSON)</a></Button>
           <RetentionForm days={p?.retentionDays ?? null} />
         </CardContent>
       </Card>

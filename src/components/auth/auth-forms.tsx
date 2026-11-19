@@ -30,18 +30,22 @@ export function LoginForm({ demo }: { demo: { email: string; password: string } 
   const params = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [demoPending, setDemoPending] = useState(false);
+  const [demoError, setDemoError] = useState<string | null>(null);
   const form = useForm<z.infer<typeof loginSchema>>({ resolver: zodResolver(loginSchema), defaultValues: { email: "", password: "" } });
+
+  /** Returns the error (with HTTP status), or null on success — in which case it navigates away. */
+  async function attemptSignIn(email: string, password: string): Promise<{ status?: number } | null> {
+    const res = await authClient.signIn.email({ email, password });
+    if (res.error) return { status: res.error.status };
+    router.push(safeNext(params.get("next")));
+    router.refresh();
+    return null;
+  }
 
   async function signIn(email: string, password: string) {
     setError(null);
-    const res = await authClient.signIn.email({ email, password });
-    if (res.error) {
-      setError(res.error.status === 429 ? "Too many attempts. Please wait a minute and try again." : "Email or password is incorrect.");
-      return false;
-    }
-    router.push(safeNext(params.get("next")));
-    router.refresh();
-    return true;
+    const err = await attemptSignIn(email, password);
+    if (err) setError(err.status === 429 ? "Too many attempts. Please wait a minute and try again." : "Email or password is incorrect.");
   }
 
   return (
@@ -78,13 +82,32 @@ export function LoginForm({ demo }: { demo: { email: string; password: string } 
             disabled={demoPending}
             onClick={async () => {
               setDemoPending(true);
-              const ok = await signIn(demo.email, demo.password);
-              if (!ok) setError("Demo account not found. Run `npm run db:seed` first.");
-              setDemoPending(false);
+              setDemoError(null);
+              try {
+                const err = await attemptSignIn(demo.email, demo.password);
+                if (err) {
+                  setDemoError(
+                    err.status === 429
+                      ? "Too many sign-in attempts from this device. Wait about a minute and try again."
+                      : err.status === 403
+                        ? "Sign-in was blocked because this address isn't a trusted origin. Open the app at the URL set in APP_URL (e.g. http://localhost:3000)."
+                        : "Demo account not found. Run `npm run db:seed` first.",
+                  );
+                }
+              } catch {
+                setDemoError("Couldn't reach the server. Check that it's running and try again.");
+              } finally {
+                setDemoPending(false);
+              }
             }}
           >
-            {demoPending ? <Loader2 className="animate-spin" /> : null} Continue with the demo student account
+            {demoPending ? <Loader2 className="animate-spin" /> : null} {demoPending ? "Signing in…" : "Continue with the demo student account"}
           </Button>
+          {demoError ? (
+            <div className="mt-3">
+              <Callout tone="bad">{demoError}</Callout>
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>

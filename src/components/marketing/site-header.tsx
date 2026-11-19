@@ -17,12 +17,12 @@ const LINKS = [
 export async function SiteHeader() {
   const [user, t, locale] = await Promise.all([getSessionUser(), getT(), getLocale()]);
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl backdrop-saturate-150">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6">
         <Logo />
-        <nav aria-label="Site" className="hidden items-center gap-5 text-sm text-muted-foreground md:flex">
+        <nav aria-label="Site" className="hidden items-center gap-0.5 text-sm text-muted-foreground md:flex">
           {LINKS.map((l) => (
-            <Link key={l.href} href={l.href} className="hover:text-foreground">{l.label}</Link>
+            <Link key={l.href} href={l.href} className="rounded-full px-3 py-1.5 transition-colors hover:bg-foreground/[0.05] hover:text-foreground">{l.label}</Link>
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-1.5">
@@ -33,7 +33,7 @@ export async function SiteHeader() {
           ) : (
             <>
               <Button asChild size="sm" variant="ghost" className="hidden sm:inline-flex"><Link href="/login">{t("marketing.signIn")}</Link></Button>
-              <Button asChild size="sm"><Link href="/signup">{t("marketing.getStarted")}</Link></Button>
+              <Button asChild size="sm" className="rounded-full px-4"><Link href="/signup">{t("marketing.getStarted")}</Link></Button>
             </>
           )}
         </div>
@@ -49,7 +49,8 @@ export async function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-card">
+    <footer className="relative border-t border-border bg-card">
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-strong/40 to-transparent" />
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-4">
         <div className="space-y-3">
           <Logo />

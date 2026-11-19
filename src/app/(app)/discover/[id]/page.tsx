@@ -57,7 +57,7 @@ export default async function ListingDetail({ params }: { params: Promise<{ id: 
         </div>
         <div className="text-right">
           <div className="text-3xl font-semibold">{l.rentCents ? formatCents(l.rentCents) : "—"}<span className="text-sm font-normal text-muted-foreground">/month</span></div>
-          <Button asChild variant="ghost" size="sm"><Link href={`/api/reports/listing/${l.id}?format=json`}><FileDown /> Export details</Link></Button>
+          <Button asChild variant="ghost" size="sm"><a href={`/api/reports/listing/${l.id}?format=json`}><FileDown /> Export details</a></Button>
         </div>
       </div>
       {l.isDemo ? <Callout tone="warn">This is a fictional demonstration listing. It is not a real or available rental, and its map position is an approximate neighbourhood area.</Callout> : null}

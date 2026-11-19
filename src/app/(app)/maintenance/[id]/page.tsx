@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { and, eq } from "drizzle-orm";
 import { AlertTriangle, CircleHelp, FileDown, Info, Lightbulb } from "lucide-react";
@@ -45,7 +44,7 @@ export default async function MaintenanceCasePage({ params }: { params: Promise<
         </div>
         <div className="flex gap-2">
           <FollowUpButton caseId={id} />
-          <Button asChild variant="outline"><Link href={`/api/reports/maintenance/${id}?format=pdf`}><FileDown /> Evidence timeline (PDF)</Link></Button>
+          <Button asChild variant="outline"><a href={`/api/reports/maintenance/${id}?format=pdf`}><FileDown /> Evidence timeline (PDF)</a></Button>
         </div>
       </div>
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { and, eq } from "drizzle-orm";
 import { FileDown } from "lucide-react";
@@ -44,7 +43,7 @@ export default async function InspectionPage({ params }: { params: Promise<{ id:
           <h1 className="text-2xl font-semibold tracking-tight">{i.kind === "move_in" ? "Move-in" : "Move-out"} inspection — {t.label}</h1>
           <p className="text-sm text-muted-foreground">{formatDate(i.inspectedOn)} · {items.length} item(s) · {items.filter((x) => x.preExisting).length} pre-existing issue(s)</p>
         </div>
-        <Button asChild variant="outline"><Link href={`/api/reports/inspection/${i.id}?format=pdf`}><FileDown /> Inspection report (PDF)</Link></Button>
+        <Button asChild variant="outline"><a href={`/api/reports/inspection/${i.id}?format=pdf`}><FileDown /> Inspection report (PDF)</a></Button>
       </div>
       <Callout tone="neutral">This report organizes what you recorded. It is not the official signed Rental Unit Condition Report and SafeLease never adds damage you didn't record.</Callout>
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">

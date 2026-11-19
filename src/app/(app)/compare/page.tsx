@@ -32,7 +32,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
   );
   return (
     <>
-      <PageHeader title="Compare properties" description="Side-by-side terms, investigation status and an explainable ranking based on what you value." actions={<Button asChild variant="outline"><Link href={`/api/reports/comparison/me?format=pdf`}><FileDown /> Comparison report</Link></Button>} />
+      <PageHeader title="Compare properties" description="Side-by-side terms, investigation status and an explainable ranking based on what you value." actions={<Button asChild variant="outline"><a href={`/api/reports/comparison/me?format=pdf`}><FileDown /> Comparison report</a></Button>} />
       {rows.length === 0 ? (
         <EmptyState icon={<Columns3 />} title="Nothing to compare yet" description="Add listings to your comparison from Discover or Saved." action={<Button asChild><Link href="/discover">Discover rentals</Link></Button>} />
       ) : (

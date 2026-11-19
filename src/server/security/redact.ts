@@ -40,6 +40,31 @@ export function redactMetadata(meta: Record<string, unknown>): Record<string, un
   return out;
 }
 
+/**
+ * Build a masker for values known to identify people in a specific case (names, contacts,
+ * evidence titles). Pattern-based redaction cannot recognise names, so redacted org views
+ * also mask the exact values the case itself extracted. Full names and their individual
+ * parts (≥3 letters) are replaced, longest first, case-insensitively on word boundaries.
+ */
+const COMMON_WORDS = new Set(["demo", "test", "student", "landlord", "agent", "property", "properties", "management", "rentals", "rental", "realty", "homes", "apartments", "inc", "ltd", "the", "and", "mr", "mrs", "ms", "dr"]);
+
+export function termMasker(terms: Array<{ value: string | null | undefined; label: string; splitWords?: boolean }>): (s: string) => string {
+  const pairs = new Map<string, string>();
+  for (const t of terms) {
+    const v = t.value?.trim();
+    if (!v || v.length < 3) continue;
+    pairs.set(v.toLowerCase(), t.label);
+    if (t.splitWords)
+      for (const w of v.replace(/\([^)]*\)/g, " ").split(/[\s,.'"“”]+/))
+        if (w.length >= 3 && /^\p{Lu}/u.test(w) && !COMMON_WORDS.has(w.toLowerCase())) pairs.set(w.toLowerCase(), t.label);
+  }
+  if (pairs.size === 0) return (s) => s;
+  const keys = [...pairs.keys()].sort((a, b) => b.length - a.length);
+  const esc = (k: string) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(`(?<![\\p{L}\\p{N}])(?:${keys.map(esc).join("|")})(?![\\p{L}\\p{N}])`, "giu");
+  return (s) => s.replace(re, (m) => pairs.get(m.toLowerCase()) ?? "[redacted]");
+}
+
 /** Replace a person's name with initials for redacted organization views. */
 export function initials(name: string | null | undefined): string {
   if (!name) return "Renter";

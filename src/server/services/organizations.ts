@@ -17,6 +17,7 @@ import {
   caseReferral,
   claim,
   consentGrant,
+  evidence,
   finding,
   investigation,
   organization,
@@ -26,7 +27,7 @@ import {
 } from "../db/schema";
 import { newId } from "@/lib/ids";
 import { AppError, notFound } from "../errors";
-import { initials, redactText } from "../security/redact";
+import { initials, redactText, termMasker } from "../security/redact";
 import { audit } from "./audit";
 import { getInvestigationForUser, logEvent } from "./investigations";
 import { notify } from "./notifications";
@@ -215,7 +216,16 @@ export async function getSharedCase(viewerId: string, orgId: string, referralId:
   const findings = await db.select().from(finding).where(and(eq(finding.investigationId, r.grant.resourceId), eq(finding.lifecycle, "active")));
   const claims = await db.select().from(claim).where(eq(claim.investigationId, r.grant.resourceId));
   const notes = await db.select({ note: adviserNote, author: user.name }).from(adviserNote).leftJoin(user, eq(user.id, adviserNote.authorId)).where(eq(adviserNote.referralId, referralId)).orderBy(desc(adviserNote.createdAt));
-  const red = (s: string) => (redacted ? redactText(s, { addresses: true }) : s);
+  const evidenceTitles = redacted ? await db.select({ title: evidence.title }).from(evidence).where(eq(evidence.investigationId, r.grant.resourceId)) : [];
+  const PERSON = new Set(["contact_name", "payment_recipient"]);
+  const IDENT = new Set(["contact_name", "payment_recipient", "contact_email", "contact_phone", "address", "postal_code", "link"]);
+  const mask = termMasker([
+    ...claims.filter((c) => IDENT.has(c.claimType)).map((c) => ({ value: c.value, label: PERSON.has(c.claimType) ? "[name]" : `[${c.claimType.replace("_", "-")}]`, splitWords: PERSON.has(c.claimType) })),
+    { value: renter?.name, label: "[renter]", splitWords: true },
+    ...evidenceTitles.map((e) => ({ value: e.title, label: "[evidence]" })),
+  ]);
+  // Order matters: mask whole evidence titles / known values first, then generic patterns.
+  const red = (s: string) => (redacted ? redactText(mask(s), { addresses: true }) : s);
   const SHOW = ["rent", "deposit", "requested_payment", "bedrooms", "bathrooms", "lease_term", "payment_method", "application_fee", "utilities", ...(redacted ? [] : ["address", "contact_name", "payment_recipient", "contact_email", "contact_phone"])];
   await audit({ actorId: viewerId, action: "shared_case.view", resourceType: "case_referral", resourceId: referralId, orgId, metadata: { scope: r.grant.scope } });
   return {

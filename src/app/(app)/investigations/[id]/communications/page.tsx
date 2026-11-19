@@ -12,7 +12,6 @@ import { NewDraftForm } from "@/components/investigation/new-draft-form";
 import { EvidenceForm } from "@/components/investigation/evidence-form";
 import { QuestionsList } from "@/components/investigation/questions-actions";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { formatDateTime } from "@/lib/utils";
 
 export default async function CommunicationsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -50,7 +49,7 @@ export default async function CommunicationsPage({ params }: { params: Promise<{
                 </div>
               ))}
             {msgs.length === 0 && history.length === 0 ? <p className="text-sm text-muted-foreground">No messages recorded.</p> : null}
-            <Button asChild variant="outline" size="sm"><Link href={`/api/reports/correspondence/${id}?format=pdf`}>Export correspondence (PDF)</Link></Button>
+            <Button asChild variant="outline" size="sm"><a href={`/api/reports/correspondence/${id}?format=pdf`}>Export correspondence (PDF)</a></Button>
           </CardContent>
         </Card>
       </div>

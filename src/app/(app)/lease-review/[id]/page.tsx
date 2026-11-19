@@ -62,7 +62,7 @@ export default async function LeaseDetail({ params }: { params: Promise<{ id: st
         </div>
         <div className="flex gap-2">
           {r.lease.investigationId ? <Button asChild variant="outline"><Link href={`/investigations/${r.lease.investigationId}`}>Open investigation</Link></Button> : null}
-          <Button asChild variant="outline"><Link href={`/api/reports/lease/${r.lease.id}?format=pdf`}><FileDown /> Lease review (PDF)</Link></Button>
+          <Button asChild variant="outline"><a href={`/api/reports/lease/${r.lease.id}?format=pdf`}><FileDown /> Lease review (PDF)</a></Button>
         </div>
       </div>
       <div className="grid gap-4 sm:grid-cols-4">

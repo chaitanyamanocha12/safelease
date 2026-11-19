@@ -7,7 +7,11 @@ export function HeroPreview() {
   return (
     <div className="relative" aria-label="Illustrative example of a SafeLease investigation with fictional data" role="img">
       <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-teal-strong/25 via-blue/15 to-transparent blur-2xl" />
-      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
+      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-elevated ring-1 ring-foreground/[0.03]">
+        <div className="flex items-center gap-1.5 border-b border-border bg-muted/50 px-4 py-2.5" aria-hidden>
+          <span className="size-2.5 rounded-full bg-[#ff5f57]/80" /><span className="size-2.5 rounded-full bg-[#febc2e]/80" /><span className="size-2.5 rounded-full bg-[#28c840]/80" />
+          <span className="mx-auto rounded-md border border-border bg-card px-3 py-0.5 font-mono text-[10px] text-muted-foreground">safelease.app/investigations/SL-7K2Q</span>
+        </div>
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
           <div>
             <div className="text-[11px] font-mono text-muted-foreground">SL-7K2Q-9MXA · Halifax</div>

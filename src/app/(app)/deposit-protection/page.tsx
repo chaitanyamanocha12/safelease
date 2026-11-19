@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ExternalLink, FileDown, PiggyBank } from "lucide-react";
 import { requireUser } from "@/server/auth/session";
 import { depositStatusSummary, getDeposit, listDeposits, listTenancies } from "@/server/services/tenancy";
@@ -78,7 +77,7 @@ export default async function DepositPage() {
                   <div className="flex flex-wrap gap-2">
                     <SimpleActionButton action={depositReturnDraftAction} args={{ depositId: d.id }} variant="outline" size="sm" success="Draft created below — not sent">Draft return request</SimpleActionButton>
                     <SimpleActionButton action={createDisputeAction} args={{ disputeType: "deposit", title: `${t?.label ?? "Deposit"} — dispute`, depositId: d.id, tenancyId: d.tenancyId ?? undefined }} variant="outline" size="sm" success="Evidence package created" redirectTo="/disputes">Build dispute package</SimpleActionButton>
-                    <Button asChild size="sm" variant="ghost"><Link href={`/api/reports/deposit/${d.id}?format=pdf`}><FileDown /> Deposit report</Link></Button>
+                    <Button asChild size="sm" variant="ghost"><a href={`/api/reports/deposit/${d.id}?format=pdf`}><FileDown /> Deposit report</a></Button>
                   </div>
                 </CardContent>
               </Card>

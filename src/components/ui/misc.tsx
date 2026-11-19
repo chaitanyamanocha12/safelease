@@ -38,8 +38,8 @@ export function Td({ className, ...p }: React.TdHTMLAttributes<HTMLTableCellElem
 
 export function EmptyState({ icon, title, description, action, className }: { icon?: React.ReactNode; title: string; description?: string; action?: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("flex flex-col items-center justify-center rounded-lg border border-dashed border-border px-6 py-12 text-center", className)}>
-      {icon ? <div className="mb-3 rounded-full bg-muted p-3 text-muted-foreground [&_svg]:size-6">{icon}</div> : null}
+    <div className={cn("flex flex-col items-center justify-center rounded-lg border border-dashed border-input bg-[radial-gradient(ellipse_at_top,var(--accent),transparent_70%)] px-6 py-12 text-center", className)}>
+      {icon ? <div className="mb-3 rounded-xl border border-border bg-card p-3 text-teal shadow-card [&_svg]:size-6">{icon}</div> : null}
       <h3 className="text-sm font-semibold">{title}</h3>
       {description ? <p className="mt-1 max-w-md text-sm text-muted-foreground">{description}</p> : null}
       {action ? <div className="mt-4">{action}</div> : null}
@@ -51,8 +51,8 @@ export function PageHeader({ title, description, actions, eyebrow }: { title: st
   return (
     <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
-        {eyebrow ? <div className="mb-1 text-xs font-medium uppercase tracking-wider text-teal">{eyebrow}</div> : null}
-        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+        {eyebrow ? <div className="eyebrow mb-2">{eyebrow}</div> : null}
+        <h1 className="text-2xl font-semibold tracking-[-0.02em] sm:text-[1.7rem]">{title}</h1>
         {description ? <div className="mt-1 max-w-3xl text-sm text-muted-foreground">{description}</div> : null}
       </div>
       {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
@@ -81,13 +81,14 @@ export function Callout({ tone = "info", title, children, icon, className }: { t
 
 export function Stat({ label, value, hint, icon }: { label: string; value: React.ReactNode; hint?: string; icon?: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-4 shadow-card">
-      <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+    <div className="group relative overflow-hidden rounded-lg border border-border bg-card p-4 shadow-card transition-shadow hover:shadow-elevated">
+      <div aria-hidden className="pointer-events-none absolute -right-8 -top-8 size-24 rounded-full bg-teal-strong/10 blur-2xl transition-colors group-hover:bg-teal-strong/20" />
+      <div className="relative flex items-center justify-between text-xs font-medium text-muted-foreground">
         {label}
-        {icon ? <span className="text-muted-foreground [&_svg]:size-4">{icon}</span> : null}
+        {icon ? <span className="flex size-7 items-center justify-center rounded-md border border-border bg-muted/60 text-teal [&_svg]:size-3.5">{icon}</span> : null}
       </div>
-      <div className="mt-2 text-2xl font-semibold tracking-tight">{value}</div>
-      {hint ? <div className="mt-1 text-xs text-muted-foreground">{hint}</div> : null}
+      <div className="relative mt-2 text-3xl font-semibold tabular-nums tracking-[-0.03em]">{value}</div>
+      {hint ? <div className="relative mt-1 text-xs text-muted-foreground">{hint}</div> : null}
     </div>
   );
 }

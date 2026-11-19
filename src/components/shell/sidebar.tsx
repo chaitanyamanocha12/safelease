@@ -23,10 +23,10 @@ export function SidebarNav({ labels, showOrg, showAdmin, onNavigate }: { labels:
   ];
   const groups = [...NAV_GROUPS, { key: "nav.settings" as MessageKey, items: extra }];
   return (
-    <nav aria-label="Main" className="flex flex-col gap-5">
+    <nav aria-label="Main" className="flex flex-col gap-4">
       {groups.map((g, gi) => (
         <div key={gi}>
-          {gi < NAV_GROUPS.length ? <div className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">{t(g.key)}</div> : <div className="mb-2 h-px bg-border" />}
+          {gi < NAV_GROUPS.length ? <div className="mb-1 px-3 text-[11px] font-medium text-muted-foreground/70">{t(g.key)}</div> : <div className="divider-fade mb-3" />}
           <ul className="flex flex-col gap-0.5">
             {g.items.map((item) => {
               const Icon = ICONS[item.icon];
@@ -38,11 +38,12 @@ export function SidebarNav({ labels, showOrg, showAdmin, onNavigate }: { labels:
                     onClick={onNavigate}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
-                      active && "bg-accent text-accent-foreground hover:bg-accent",
+                      "group relative flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[13px] font-medium text-muted-foreground/90 transition-colors hover:bg-foreground/[0.04] hover:text-foreground",
+                      active && "bg-sidebar-active text-foreground shadow-[0_0_0_1px_var(--border),0_1px_2px_rgb(16_29_52/0.06)] hover:bg-sidebar-active",
                     )}
                   >
-                    <Icon className="size-4" aria-hidden />
+                    {active ? <span aria-hidden className="absolute -left-3 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-r-full bg-teal-strong" /> : null}
+                    <Icon className={cn("size-[15px] opacity-70 transition-opacity group-hover:opacity-100", active && "text-teal opacity-100")} aria-hidden />
                     {t(item.key)}
                   </Link>
                 </li>
